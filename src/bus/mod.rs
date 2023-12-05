@@ -25,6 +25,19 @@ impl Bus {
         );
     }
 
+    pub fn read(&self, address: u16) -> u8 {
+        self.0
+            .get(&MemoryRange::from_address(address))
+            .map(|entry| entry.read(address))
+            .unwrap_or(0)
+    }
+
+    pub fn write(&self, address: u16, byte: u8) {
+        self.0
+            .get(&MemoryRange::from_address(address))
+            .map(|entry| entry.write(address, byte));
+    }
+
     pub fn read_u16(&self, address: u16) -> u16 {
         u16::from_be_bytes([self.read(address), self.read(address.wrapping_add(1))])
     }
@@ -33,20 +46,5 @@ impl Bus {
         let bytes = word.to_be_bytes();
         self.write(address, bytes[0]);
         self.write(address.wrapping_add(1), bytes[1])
-    }
-}
-
-impl RefUnit for Bus {
-    fn read(&self, address: u16) -> u8 {
-        self.0
-            .get(&MemoryRange::from_address(address))
-            .map(|entry| entry.read(address))
-            .unwrap_or(0)
-    }
-
-    fn write(&self, address: u16, byte: u8) {
-        self.0
-            .get(&MemoryRange::from_address(address))
-            .map(|entry| entry.write(address, byte));
     }
 }
