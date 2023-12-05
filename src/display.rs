@@ -28,12 +28,13 @@ impl Display {
         window.limit_update_rate(Some(Duration::from_micros(16666)));
         Ok(Self {
             window,
-            buffer: vec![0u32; WIDTH * HEIGHT].into_boxed_slice()
+            buffer: vec![0u32; WIDTH * HEIGHT].into_boxed_slice(),
         })
     }
 
     pub fn set_rom_name(&mut self, rom_name: String) {
-        self.window.set_title(format!("{NAME} | {rom_name}").as_str());
+        self.window
+            .set_title(format!("{NAME} | {rom_name}").as_str());
     }
 
     pub fn is_open(&self) -> bool {
@@ -41,7 +42,8 @@ impl Display {
     }
 
     pub fn update(&mut self) -> Result<(), Box<dyn Error>> {
-        self.window.update_with_buffer(&self.buffer, WIDTH, HEIGHT)?;
+        self.window
+            .update_with_buffer(&self.buffer, WIDTH, HEIGHT)?;
         Ok(())
     }
 

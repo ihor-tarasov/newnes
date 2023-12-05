@@ -2,7 +2,7 @@ use std::path::Path;
 
 use log::{error, info};
 
-use crate::{args::Args, display::Display};
+use crate::{args::Args, cartridge, display::Display};
 
 pub struct Emulator {
     display: Display,
@@ -25,6 +25,10 @@ impl Emulator {
     }
 
     pub fn new(args: Args) -> Self {
+        cartridge::load_rom(&args.path).unwrap_or_else(|error| {
+            error!("Unable to load ROM \"{}\", \"{error}", args.path);
+            std::process::exit(2);
+        });
         let mut display = Self::create_display();
         display.set_rom_name(Self::get_rom_name_from_path(&args.path));
         Self { display }
